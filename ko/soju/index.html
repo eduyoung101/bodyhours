@@ -22,8 +22,8 @@
     <a class="lang" href="/en/">English</a>
   </div>
 
-  <h1>얼굴 빨개지는 사람<br><em>음주 위험 체크리스트</em></h1>
-  <p class="lead">해당하는 것만 눌러 보세요. 아래에서 결과가 바로 바뀌어요. 문항마다 「근거」를 누르면 어디서 나온 기준인지 볼 수 있어요.</p>
+  <h1>술 마시면 <em>얼굴이 빨개지나요?</em><br>1분 음주 위험 체크</h1>
+  <p class="lead">해당하는 것만 체크하세요. 결과는 아래에서 바로 바뀌어요.</p>
 
   <form id="f">
   <div class="sec"><h2>A · 홍조 신호</h2>
@@ -84,7 +84,7 @@
 <script>
 (function(){
   var f=document.getElementById('f'), lvt=document.getElementById('lvt'), cnt=document.getElementById('cnt'), msgs=document.getElementById('msgs'), bars=document.querySelectorAll('#meter span');
-  var LV=[["아직 체크 전이에요","#3f3f46"],["낮음 · 지금처럼만","#2bd47a"],["주의 · 습관을 볼 때","#ffe000"],["높음 · 줄여야 할 때","#ff9f1a"],["매우 높음 · 가장 위험한 조합","#ff5a5a"]];
+  var LV=[["아직 체크 전이에요","#3f3f46"],["낮음 · 지금처럼만","#30a46c"],["주의 · 습관을 볼 때","#f5a524"],["높음 · 줄여야 할 때","#f07a2c"],["매우 높음 · 가장 위험한 조합","#e5484d"]];
   function q(n){return f.elements['q'+n].checked}
   function upd(){
     var c=0; for(var i=1;i<=9;i++){ var el=f.elements['q'+i]; if(el.checked)c++; el.closest('.q').classList.toggle('on',el.checked); }
@@ -99,8 +99,8 @@
     if(q(6)) m.push(['','잠을 위해 마시는 술','쉽게 잠들어도 밤 후반 잠이 깨지고 렘수면이 줄어요.']);
     if(q(5)||q(8)) m.push(['','체질은 바뀌지 않아요','덜 빨개지게 됐거나 숙취해소제를 먹어도, 효소가 약한 체질 자체는 그대로예요.']);
     if(c>0&&m.length===0) m.push(['','지금은 위험 신호가 적어요','그래도 세계보건기구는 건강에 안전한 음주량은 없다고 해요.']);
-    lvt.textContent=LV[lv][0]; var ml=document.getElementById('mlv'); ml.textContent=LV[lv][0]; ml.style.color=lv?LV[lv][1]:'#f4f4f5'; document.getElementById('mcnt').textContent=c+' / 9 · 결과 보기 ↓'; lvt.style.color=lv?LV[lv][1]:'#f4f4f5'; cnt.textContent=c+' / 9';
-    bars.forEach(function(b,i){ b.style.background = (lv>0 && i<lv) ? LV[lv][1] : '#2f2f33'; });
+    lvt.textContent=LV[lv][0]; var ml=document.getElementById('mlv'); ml.textContent=LV[lv][0];  document.getElementById('mcnt').textContent=c+' / 9 · 결과 보기 ↓'; lvt.style.color=lv?LV[lv][1]:''; cnt.textContent=c+' / 9';
+    bars.forEach(function(b,i){ b.style.background = (lv>0 && i<lv) ? LV[lv][1] : ''; });
     msgs.innerHTML=m.map(function(x){return '<div class="m '+x[0]+'"><strong>'+x[1]+'</strong>'+x[2]+'</div>'}).join('');
   }
   f.addEventListener('change',upd); upd();
