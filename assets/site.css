@@ -121,3 +121,29 @@ details[open] summary::before{content:"근거 닫기"}
 .next{display:block;margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--bg);text-decoration:none}
 .next small{font-size:12px;color:var(--mute);font-weight:600}
 .next b{display:block;font-size:15px;margin-top:2px}
+/* 글(블로그) 1112 */
+.post .meta{font-size:13px;color:var(--mute);margin-top:12px}
+.post .body{margin-top:28px;font-size:17px;line-height:1.85;letter-spacing:-.2px}
+.post .body > p{margin-top:16px}
+.post .body h2{font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1.4;margin-top:48px;text-wrap:balance}
+.post .body h2 + p{margin-top:12px}
+.post figure{margin:24px 0 8px}
+.post figure img{display:block;width:100%;height:auto;border-radius:12px;background:var(--soft);aspect-ratio:16/9}
+.post figcaption{font-size:13px;color:var(--mute);margin-top:8px;text-align:center}
+.post .say{margin-top:20px;padding:16px 18px;border-radius:14px;background:var(--flush-soft);font-weight:600;font-size:16.5px;line-height:1.65}
+.post .say small{display:block;font-weight:500;font-size:13px;color:var(--sub);margin-top:6px}
+.post .toc{margin-top:28px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;font-size:15px}
+.post .toc b{display:block;font-size:13px;color:var(--mute);margin-bottom:6px}
+.post .toc ol{padding-left:20px;display:grid;gap:3px}
+.post .toc a{text-decoration:none;color:var(--sub)}
+.post .box{margin-top:20px;padding:16px 18px;border-radius:14px;background:var(--soft);font-size:15.5px;line-height:1.7;color:var(--sub)}
+.post .box b{color:var(--fg)}
+.post .faq details{border-bottom:1px solid var(--line);padding:14px 0}
+.post .faq summary{font-size:16px;font-weight:700;color:var(--fg);display:block}
+.post .faq summary::before{content:"Q. "}
+.post .faq details[open] summary::before{content:"Q. "}
+.post .faq p{font-size:15.5px;color:var(--sub);margin-top:8px}
+.post .yt{display:block;margin-top:24px;border-radius:16px;overflow:hidden;text-decoration:none;background:var(--fg);color:var(--bg)}
+.post .yt img{display:block;width:100%;aspect-ratio:16/9;height:auto;opacity:.85}
+.post .yt span{display:block;padding:14px 18px;font-weight:700;font-size:16px}
+.post .yt small{display:block;font-weight:500;font-size:13px;opacity:.7;margin-top:2px}

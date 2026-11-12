@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /ko/naver-soju-7q2k/
+Sitemap: https://bodyhours.com/sitemap.xml
