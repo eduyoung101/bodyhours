@@ -69,7 +69,7 @@
       <div class="blk"><h3>술자리 생존 3계명</h3><ol id="rules"></ol></div>
       <div class="blk" id="factsBlk" hidden><h3>내가 고른 답, 팩트체크</h3><div id="facts" class="facts"></div></div>
       <div class="blk"><h3>술자리 궁합</h3><div class="pair"><div><small>찰떡 짝꿍</small><b id="good"></b><p id="goodw"></p></div><div><small>환장의 짝꿍</small><b id="bad"></b><p id="badw"></p></div></div></div>
-      <div class="blk"><h3>이 테스트를 푼 사람들은</h3><div id="stats" class="stats"><p class="hint">집계를 불러오는 중이에요…</p></div></div>
+      <div class="blk" id="statsBlk" hidden><h3>이 테스트를 푼 사람들은</h3><div id="stats" class="stats"></div></div>
       <div class="acts">
         <button class="btn" id="save" type="button">결과 카드 저장하기</button>
         <button class="btn ghost" id="share" type="button">친구한테 보내기</button>
@@ -153,18 +153,19 @@
   /* ── 집계: 한 브라우저에서 한 번만 센다 ── */
   function store(key,val){ try{ if(val===undefined) return localStorage.getItem(key); localStorage.setItem(key,val); }catch(e){ return null; } }
   function record(k){
-    if(!STATS_URL){ $('stats').innerHTML='<p class="hint">집계를 준비하고 있어요.</p>'; return; }
+    if(!STATS_URL) return;
     var key='bh_'+TEST+'_voted', prev=store(key);
     var go = (prev===k) ? fetch(STATS_URL+'/stats?t='+TEST) : fetch(STATS_URL+'/hit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({t:TEST,type:k,prev:prev||''})});
-    go.then(function(r){return r.json()}).then(function(d){ store(key,k); showStats(d.counts||{}, k); }).catch(function(){ $('stats').innerHTML='<p class="hint">집계를 잠시 불러오지 못했어요.</p>'; });
+    go.then(function(r){return r.json()}).then(function(d){ store(key,k); showStats(d.counts||{}, k); }).catch(function(){ $('statsBlk').hidden=true; });
   }
   function showStats(c,mine){
     var total=0; for(var x in T) total+=c[x]||0;
-    if(total<30){ $('stats').innerHTML='<p class="hint">지금까지 '+total+'명이 풀었어요. 30명이 모이면 유형별 비율을 보여 드려요.</p>'; return; }
+    if(total<30){ $('statsBlk').hidden=true; return; }
+    $('statsBlk').hidden=false;
     $('stats').innerHTML=Object.keys(T).sort(function(a,b){return (c[b]||0)-(c[a]||0)}).map(function(x){
       var pct=Math.round((c[x]||0)*100/total);
       return '<div class="sr'+(x===mine?' me':'')+'"><span>'+T[x].emo+' '+T[x].name.split(' ').slice(-2).join(' ')+(x===mine?' · 나':'')+'</span><i><em style="width:'+pct+'%;background:'+T[x].color+'"></em></i><b>'+pct+'%</b></div>';
-    }).join('')+'<p class="hint">이 테스트를 푼 '+total.toLocaleString()+'명 기준이에요(전체 인구 통계가 아니에요).</p>';
+    }).join('')+'<p class="hint">이 테스트를 푼 사람들 기준이에요(전체 인구 통계가 아니에요).</p>';
   }
   /* ── 결과 카드(9:16) 그리기 ── */
   function card(){
