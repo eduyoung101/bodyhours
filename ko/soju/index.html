@@ -57,18 +57,31 @@
   </div>
   </form>
 
-  <div class="res" id="res" aria-live="polite"><div style="font-size:13px;color:#a1a1aa;margin-bottom:6px">내 결과</div>
-    <div class="lv"><b id="lvt">아직 답하기 전이에요</b><small id="cnt">0 / 9</small></div>
-    <div class="meter" id="meter"><span></span><span></span><span></span><span></span></div>
-    <div class="msgs" id="msgs"></div>
+  <div class="res" id="res" aria-live="polite">
+    <div id="pending"><div class="lv"><b id="lvt">아직 답하기 전이에요</b><small id="cnt">0 / 9</small></div>
+      <div class="meter" id="meter"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="hint">9문항에 다 답하면 나의 술자리 체질 캐릭터가 나와요.</p></div>
+    <div id="result" hidden>
+      <div class="kicker">나의 술자리 체질</div>
+      <div class="hero"><div class="emo" id="emo"></div><div><div class="tname" id="tname"></div><div class="tline" id="tline"></div></div></div>
+      <div class="stat"><span>알코올 방어력</span><b id="stars"></b></div>
+      <div class="blk"><h3>지금 몸속 중계</h3><p id="inside"></p></div>
+      <div class="blk"><h3>술자리 생존 3계명</h3><ol id="rules"></ol></div>
+      <div class="blk" id="factsBlk" hidden><h3>내가 고른 답, 팩트체크</h3><div id="facts" class="facts"></div></div>
+      <div class="blk"><h3>술자리 궁합</h3><div class="pair"><div><small>찰떡 짝꿍</small><b id="good"></b><p id="goodw"></p></div><div><small>환장의 짝꿍</small><b id="bad"></b><p id="badw"></p></div></div></div>
+      <div class="blk"><h3>이 테스트를 푼 사람들은</h3><div id="stats" class="stats"><p class="hint">집계를 불러오는 중이에요…</p></div></div>
+      <div class="acts">
+        <button class="btn" id="save" type="button">결과 카드 저장하기</button>
+        <button class="btn ghost" id="share" type="button">친구한테 보내기</button>
+      </div>
+      <a class="next" id="next" target="_blank" rel="noopener"><small>내 유형에 맞는 다음 영상</small><b id="nextT"></b></a>
+    </div>
   </div>
 
   <a class="mini" id="mini" href="#res"><b id="mlv">아직 답하기 전이에요</b><span id="mcnt">0 / 9 답함</span></a>
-  <a class="btn" href="https://www.youtube.com/results?search_query=%EA%B1%B4%ED%94%8C+%EC%86%8C%EC%A3%BC+%ED%95%9C+%EB%B3%91%EC%9D%B4+%EB%AA%B8%EC%97%90+%EB%82%A8%EA%B8%B0%EB%8A%94+12%EC%8B%9C%EA%B0%84" target="_blank" rel="noopener">본편 보기 · 소주 한 병이 몸에 남기는 12시간</a>
-  <button class="btn ghost" id="share" type="button" style="width:100%;cursor:pointer;font-family:inherit">이 체크리스트 공유하기</button>
 
   <div class="foot">
-    <p>이 체크리스트는 영상 내용을 바탕으로 만든 <b>참고용</b>이에요. 병을 진단하는 검사가 아니에요. 체크한 내용은 저장되지 않고 이 화면 안에서만 계산돼요.</p>
+    <p>이 체크리스트는 영상 내용을 바탕으로 만든 <b>참고용</b>이에요. 병을 진단하는 검사가 아니에요. 답한 내용은 저장하지 않아요. 결과 집계에는 「어떤 유형이 나왔는지」 하나만 익명으로 세요.</p>
     <p>술 때문에 걱정되면 가까운 보건소나 정신건강복지센터에서 상담받을 수 있어요. 정신건강 위기상담 ☎ 1577-0199</p>
     <ol class="refs">
       <li>Brooks PJ 외. The Alcohol Flushing Response: An Unrecognized Risk Factor for Esophageal Cancer from Alcohol Consumption. <i>PLoS Med</i> 2009;6(3):e1000050.</li>
@@ -81,36 +94,111 @@
     </ol>
   </div>
 </div>
+<script>window.BH_STATS_URL="https://bodyhours-stats.dcom-1334.workers.dev";</script>
 <script>
 (function(){
-  var f=document.getElementById('f'), lvt=document.getElementById('lvt'), cnt=document.getElementById('cnt'), msgs=document.getElementById('msgs'), bars=document.querySelectorAll('#meter span');
-  var LV=[["","#3f3f46"],["낮음 · 지금처럼만","#30a46c"],["주의 · 습관을 볼 때","#f5a524"],["높음 · 줄여야 할 때","#f07a2c"],["매우 높음 · 가장 위험한 조합","#e5484d"]];
+  // 집계 서버(클라우드플레어). 비어 있으면 집계 칸은 「준비 중」으로 둔다.
+  var STATS_URL = window.BH_STATS_URL || "";
+  var TEST = "soju";
+  var YT = "https://www.youtube.com/results?search_query=%EA%B1%B4%ED%94%8C+%EC%86%8C%EC%A3%BC+%ED%95%9C+%EB%B3%91%EC%9D%B4+%EB%AA%B8%EC%97%90+%EB%82%A8%EA%B8%B0%EB%8A%94+12%EC%8B%9C%EA%B0%84";
+  var T = {
+    apple:{emo:"🍎",name:"한 잔 만에 익어 버린 붉은 사과",line:"몸이 보내는 「그만」 신호를 얼굴로 바로 띄우는 정직한 체질",stars:2,color:"#e5484d",
+      inside:"간 속 분해 공장에 아세트알데하이드를 치울 직원이 모자라요. 처리 못 한 물질이 쌓이면서 얼굴로 빨간 사이렌을 켠 상태예요. 지금은 많이 마시지 않아서 공장이 버티고 있어요.",
+      rules:["얼굴이 빨개지는 순간을 「오늘은 여기까지」 신호로 삼기","첫 잔은 30분 넘게 천천히, 술 한 잔에 물 한 잔","「마시면 는다」는 말은 믿지 않기 — 덜 빨개져도 효소는 그대로예요"],
+      good:"soda",goodw:"내 잔에 몰래 물을 채워 주는 생명의 은인",bad:"train",badw:"「한 잔만 더」에 같이 넘어가는 위험한 조합"},
+    train:{emo:"🚂",name:"브레이크 고장 난 기관차",line:"빨간 신호가 켜져도 분위기 따라 끝까지 달리는 타입",stars:1,color:"#c2410c",
+      inside:"분해 공장 직원은 부족한데 일감(술)은 계속 들어오는 상태예요. 홍조 반응이 있는 사람이 많이 마시면 식도암 위험이 10배 넘게 높았다는 연구가 많아요. 체질과 습관이 정면으로 부딪히는 중이에요.",
+      rules:["술자리마다 「몇 잔까지」를 먼저 정하고 시작하기","주 2회 넘는 술자리는 하나씩 줄여 보기","얼굴이 빨개졌다면 그 잔이 마지막 잔"],
+      good:"soda",goodw:"브레이크를 대신 밟아 주는 든든한 친구",bad:"bear",badw:"끝까지 같이 달리다 다음 날 같이 후회하는 조합"},
+    bear:{emo:"🐻",name:"끄떡없는 척하는 곰",line:"얼굴은 멀쩡한데 마시는 양이 이미 선을 넘은 타입",stars:3,color:"#b45309",
+      inside:"분해 효소는 비교적 잘 일하지만, 들어오는 양이 많아 간이 쉬는 날이 없어요. 얼굴에 티가 안 나니 내가 얼마나 마셨는지 놓치기 쉬워요.",
+      rules:["「안 취했다」 대신 「몇 잔 마셨다」로 세기","한 자리 7잔(여성 5잔) 넘기 전에 멈추기","일주일에 이틀 이상은 술 없는 날 만들기"],
+      good:"apple",goodw:"빨개진 얼굴로 「오늘은 그만」을 대신 알려 주는 친구",bad:"train",badw:"서로 「아직 괜찮아」를 외치는 조합"},
+    soda:{emo:"🫧",name:"맑은 눈의 탄산수 요정",line:"내 몸 신호를 알고 선을 지키는 술자리 지킴이",stars:4,color:"#30a46c",
+      inside:"분해 공장이 일감을 제때 치우고 있어요. 지금 습관이라면 몸속 공장에 무리가 적어요. 다만 세계보건기구는 건강에 안전한 음주량은 없다고 해요.",
+      rules:["지금처럼 마시는 양 지키기","친구 잔에도 물 한 잔 채워 주기","빨개지는 친구에게 이 테스트 보내 주기"],
+      good:"apple",goodw:"서로의 속도를 맞춰 주는 편안한 사이",bad:"train",badw:"말리다가 내가 먼저 지치는 조합"}
+  };
+  var FACT = {
+    6:["잠 때문에 마시는 술","술은 잠드는 시간만 당겨 줄 뿐, 밤 후반 잠을 자꾸 깨우고 렘수면을 줄여요."],
+    7:["다음 날 아침 운전","알코올은 한 시간에 약 0.015%씩만 빠져요. 많이 마신 다음 날 아침엔 아직 면허 정지 수준일 수 있어요."],
+    8:["숙취해소제","숙취를 막거나 낫게 한다는 확실한 근거가 있는 방법은 아직 없어요(BMJ 2005). 효소를 늘려 주지도 않아요."],
+    9:["술과 담배","담배는 술과 함께 식도암 위험을 서로 키워요. 침 속 아세트알데하이드도 늘어나요."]
+  };
+  var f=document.getElementById('f'), $=function(id){return document.getElementById(id)};
+  var bars=document.querySelectorAll('#meter span'), current=null;
   function q(n){return f.elements['q'+n].value==='y'}
   function done(n){return f.elements['q'+n].value!==''}
+  function typeOf(){ var A=q(1)||q(2), B=q(3)||q(4)||q(5); return A&&B?'train':A?'apple':B?'bear':'soda'; }
+  function stars(n){ return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n); }
   function upd(){
-    var c=0, ans=0; for(var i=1;i<=9;i++){ var y=q(i); if(y)c++; if(done(i))ans++; document.getElementsByName('q'+i)[0].closest('.q').classList.toggle('on',y); }
-    var A=q(1)||q(2), B=q(3)||q(4)||q(5), hi=q(3)&&q(4), m=[];
-    var lv = ans<9?0 : c===0?1 : (A&&B)?4 : (hi||q(7)||(A&&q(9)))?3 : (A||c>=2)?2 : 1;
-    if(A&&B) m.push(['red','홍조 신호 + 많이 마심','영상 속 가장 위험한 조합이에요. 홍조 반응이 있는 사람이 많이 마시면 식도암 위험이 10배 넘게 높았다는 연구가 많아요.']);
-    else if(A) m.push(['','술 분해 효소가 약한 체질일 수 있어요','홍조 설문에서 「예」가 나왔어요. 이 체질은 마시는 양이 늘수록 위험이 커져요.']);
-    if(hi) m.push(['red','고위험 음주 기준에 해당해요','한 자리 7잔(여성 5잔) 이상을 주 2회 넘게 마시는 건 질병관리청 「고위험 음주」예요.']);
-    else if(q(3)) m.push(['','한 자리 음주량이 기준선이에요','소주 한 병이면 한 번에 이 기준에 닿아요. 횟수를 함께 보세요.']);
-    if(A&&q(9)) m.push(['red','홍조 + 흡연','담배는 술과 함께 식도암 위험을 서로 키워요.']);
-    if(q(7)) m.push(['red','숙취 운전 위험','알코올은 한 시간에 약 0.015%씩만 빠져요. 많이 마신 다음 날 아침엔 운전대를 잡지 마세요.']);
-    if(q(6)) m.push(['','잠을 위해 마시는 술','쉽게 잠들어도 밤 후반 잠이 깨지고 렘수면이 줄어요.']);
-    if(q(5)||q(8)) m.push(['','체질은 바뀌지 않아요','덜 빨개지게 됐거나 숙취해소제를 먹어도, 효소가 약한 체질 자체는 그대로예요.']);
-    if(ans===9&&m.length===0) m.push(['','지금은 위험 신호가 적어요','그래도 세계보건기구는 건강에 안전한 음주량은 없다고 해요.']);
-    if(ans<9) m=[];
-    var head = ans<9 ? (ans===0?'아직 답하기 전이에요':(9-ans)+'문항 남았어요') : LV[lv][0]; lvt.textContent=head; var ml=document.getElementById('mlv'); ml.textContent=head; document.getElementById('mcnt').textContent = ans<9 ? ans+' / 9 답함' : '결과 보기 ↓'; lvt.style.color=(ans===9&&lv)?LV[lv][1]:''; cnt.textContent=ans+' / 9';
-    bars.forEach(function(b,i){ b.style.background = (lv>0 && i<lv) ? LV[lv][1] : ''; });
-    msgs.innerHTML=m.map(function(x){return '<div class="m '+x[0]+'"><strong>'+x[1]+'</strong>'+x[2]+'</div>'}).join('');
+    var ans=0; for(var i=1;i<=9;i++){ if(done(i))ans++; document.getElementsByName('q'+i)[0].closest('.q').classList.toggle('on',q(i)); }
+    bars.forEach(function(b,i){ b.classList.toggle('on', i<ans); });
+    var head = ans===0?'아직 답하기 전이에요':(9-ans)+'문항 남았어요';
+    $('lvt').textContent=head; $('cnt').textContent=ans+' / 9';
+    if(ans<9){ $('pending').hidden=false; $('result').hidden=true; $('mlv').textContent=head; $('mcnt').textContent=ans+' / 9 답함'; current=null; return; }
+    var k=typeOf(), t=T[k]; current=k;
+    $('pending').hidden=true; $('result').hidden=false;
+    $('emo').textContent=t.emo; $('tname').textContent=t.name; $('tname').style.color=t.color; $('tline').textContent=t.line;
+    $('stars').textContent=stars(t.stars); $('inside').textContent=t.inside;
+    $('rules').innerHTML=t.rules.map(function(r){return '<li>'+r+'</li>'}).join('');
+    var fx=[6,7,8,9].filter(q).map(function(n){return '<div class="fx"><b>'+FACT[n][0]+'</b>'+FACT[n][1]+'</div>'});
+    $('factsBlk').hidden=!fx.length; $('facts').innerHTML=fx.join('');
+    $('good').textContent=T[t.good].emo+' '+T[t.good].name; $('goodw').textContent=t.goodw;
+    $('bad').textContent=T[t.bad].emo+' '+T[t.bad].name; $('badw').textContent=t.badw;
+    $('next').href=YT; $('nextT').textContent='소주 한 병이 몸에 남기는 12시간 ▶';
+    $('mlv').textContent=t.emo+' '+t.name; $('mcnt').textContent='결과 보기 ↓';
+    record(k);
   }
-  f.addEventListener('change',upd); upd();
-  document.getElementById('share').addEventListener('click',function(){
-    var d={title:document.title,url:location.href};
-    if(navigator.share){navigator.share(d).catch(function(){});}
-    else if(navigator.clipboard){navigator.clipboard.writeText(location.href).then(function(){var b=document.getElementById('share');b.textContent='주소를 복사했어요';setTimeout(function(){b.textContent='이 체크리스트 공유하기'},2000);});}
+  /* ── 집계: 한 브라우저에서 한 번만 센다 ── */
+  function store(key,val){ try{ if(val===undefined) return localStorage.getItem(key); localStorage.setItem(key,val); }catch(e){ return null; } }
+  function record(k){
+    if(!STATS_URL){ $('stats').innerHTML='<p class="hint">집계를 준비하고 있어요.</p>'; return; }
+    var key='bh_'+TEST+'_voted', prev=store(key);
+    var go = (prev===k) ? fetch(STATS_URL+'/stats?t='+TEST) : fetch(STATS_URL+'/hit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({t:TEST,type:k,prev:prev||''})});
+    go.then(function(r){return r.json()}).then(function(d){ store(key,k); showStats(d.counts||{}, k); }).catch(function(){ $('stats').innerHTML='<p class="hint">집계를 잠시 불러오지 못했어요.</p>'; });
+  }
+  function showStats(c,mine){
+    var total=0; for(var x in T) total+=c[x]||0;
+    if(total<30){ $('stats').innerHTML='<p class="hint">지금까지 '+total+'명이 풀었어요. 30명이 모이면 유형별 비율을 보여 드려요.</p>'; return; }
+    $('stats').innerHTML=Object.keys(T).sort(function(a,b){return (c[b]||0)-(c[a]||0)}).map(function(x){
+      var pct=Math.round((c[x]||0)*100/total);
+      return '<div class="sr'+(x===mine?' me':'')+'"><span>'+T[x].emo+' '+T[x].name.split(' ').slice(-2).join(' ')+(x===mine?' · 나':'')+'</span><i><em style="width:'+pct+'%;background:'+T[x].color+'"></em></i><b>'+pct+'%</b></div>';
+    }).join('')+'<p class="hint">이 테스트를 푼 '+total.toLocaleString()+'명 기준이에요(전체 인구 통계가 아니에요).</p>';
+  }
+  /* ── 결과 카드(9:16) 그리기 ── */
+  function card(){
+    var t=T[current], c=document.createElement('canvas'); c.width=1080; c.height=1920; var g=c.getContext('2d');
+    var F='"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif';
+    g.fillStyle='#ffffff'; g.fillRect(0,0,1080,1920);
+    g.fillStyle=t.color; g.globalAlpha=.08; g.beginPath(); g.arc(540,700,520,0,Math.PI*2); g.fill(); g.globalAlpha=1;
+    g.fillStyle='#17171a'; g.font='800 44px '+F; g.fillText('건플 · 몸속탐험',90,140);
+    g.fillStyle='#6b6b73'; g.font='600 40px '+F; g.fillText('나의 술자리 체질',90,260);
+    g.font='280px '+F; g.textAlign='center'; g.fillText(t.emo,540,700); g.textAlign='left';
+    function wrap(txt,x,y,max,lh){ var line='',out=[]; txt.split(' ').forEach(function(w){ var tt=line?line+' '+w:w; if(g.measureText(tt).width>max&&line){out.push(line);line=w}else line=tt; }); out.push(line); out.forEach(function(l,i){g.fillText(l,x,y+i*lh)}); return y+out.length*lh; }
+    g.fillStyle=t.color; g.font='800 88px '+F; var y=wrap(t.name,90,920,900,108);
+    g.fillStyle='#3f3f46'; g.font='600 44px '+F; y=wrap(t.line,90,y+30,900,64);
+    g.fillStyle='#f6f6f7'; g.fillRect(90,y+50,900,140); g.fillStyle='#6b6b73'; g.font='600 38px '+F; g.fillText('알코올 방어력',130,y+135);
+    g.fillStyle=t.color; g.font='700 56px '+F; g.textAlign='right'; g.fillText(stars(t.stars),950,y+140); g.textAlign='left';
+    g.fillStyle='#17171a'; g.font='700 40px '+F; g.fillText('오늘의 처방',90,y+290);
+    g.fillStyle='#3f3f46'; g.font='500 40px '+F; wrap(t.rules[0],90,y+360,900,58);
+    g.fillStyle='#a1a1aa'; g.font='600 34px '+F; g.fillText('나도 해 보기 → bodyhours.com/ko/soju',90,1820);
+    return c;
+  }
+  $('save').addEventListener('click',function(){
+    if(!current) return; var c=card();
+    c.toBlob(function(b){
+      var file=new File([b],'건플_술자리체질.png',{type:'image/png'});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){ navigator.share({files:[file],title:'나의 술자리 체질'}).catch(function(){}); return; }
+      var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='건플_술자리체질.png'; document.body.appendChild(a); a.click(); a.remove();
+    },'image/png');
   });
+  $('share').addEventListener('click',function(){
+    var t=current?T[current]:null, msg=(t?'나 술 마시면 '+t.emo+' 「'+t.name+'」 나왔어 ㅋㅋ 너는 뭐 나와? ':'얼굴 빨개지는 사람 음주 체크리스트 ')+location.href;
+    if(navigator.share){ navigator.share({text:msg}).catch(function(){}); return; }
+    var b=$('share'); (navigator.clipboard?navigator.clipboard.writeText(msg):Promise.reject()).then(function(){ b.textContent='문구를 복사했어요'; setTimeout(function(){b.textContent='친구한테 보내기'},2000); }).catch(function(){ b.textContent=msg; });
+  });
+  f.addEventListener('change',upd); upd();
 })();
 </script>
 </body>

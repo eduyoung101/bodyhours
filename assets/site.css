@@ -87,3 +87,37 @@ details[open] summary::before{content:"근거 닫기"}
 .yn label:first-child input:checked + span{background:var(--flush);color:#fff;box-shadow:none}
 .yn input:focus-visible + span{outline:2px solid var(--flush);outline-offset:2px}
 @media (max-width:380px){.row{flex-direction:column;align-items:stretch;gap:10px}.yn{align-self:flex-start}}
+/* 결과: 캐릭터 카드 (1112) */
+.meter{display:grid;grid-template-columns:repeat(9,1fr)}
+.meter span.on{background:var(--fg)}
+.hint{font-size:13.5px;color:var(--mute);margin-top:8px}
+.kicker{font-size:13px;color:var(--mute);font-weight:600}
+.hero{display:flex;gap:16px;align-items:center;margin-top:10px}
+.emo{font-size:64px;line-height:1}
+.tname{font-size:23px;font-weight:800;letter-spacing:-.6px;line-height:1.3;text-wrap:balance}
+.tline{font-size:15px;color:var(--sub);margin-top:4px}
+.stat{display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding:12px 14px;background:var(--bg);border-radius:12px;font-size:14px;color:var(--sub)}
+.stat b{font-size:18px;letter-spacing:2px;color:var(--fg)}
+.blk{margin-top:22px}
+.blk h3{font-size:14px;font-weight:700;margin-bottom:8px}
+.blk p,.blk li{font-size:15px;color:var(--sub);line-height:1.65}
+.blk ol{padding-left:20px;display:grid;gap:4px}
+.facts{display:grid;gap:8px}
+.fx{font-size:14.5px;color:var(--sub);background:var(--bg);border-radius:12px;padding:12px 14px;line-height:1.6}
+.fx b{display:block;color:var(--flush);font-size:14px;margin-bottom:2px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pair > div{background:var(--bg);border-radius:12px;padding:12px 14px;min-width:0}
+.pair small{font-size:12px;color:var(--mute);font-weight:600}
+.pair b{display:block;font-size:14.5px;margin:4px 0 2px;line-height:1.4}
+.pair p{font-size:13.5px}
+.stats{display:grid;gap:8px}
+.sr{display:grid;grid-template-columns:minmax(0,1fr) 90px 42px;gap:8px;align-items:center;font-size:14px;color:var(--sub)}
+.sr i{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.sr em{display:block;height:100%;border-radius:4px}
+.sr b{text-align:right;font-variant-numeric:tabular-nums;color:var(--fg)}
+.sr.me span{color:var(--fg);font-weight:700}
+.acts{margin-top:22px}
+.acts .btn{margin-top:10px}
+.next{display:block;margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--bg);text-decoration:none}
+.next small{font-size:12px;color:var(--mute);font-weight:600}
+.next b{display:block;font-size:15px;margin-top:2px}
