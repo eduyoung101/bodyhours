@@ -32,12 +32,12 @@ h1 em{font-style:normal;color:var(--flush)}
 .sec h2{font-size:13px;font-weight:600;color:var(--mute);letter-spacing:.2px;padding-bottom:6px;border-bottom:1px solid var(--line)}
 
 .q{border-bottom:1px solid var(--line)}
-.q label{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:18px 0 14px;cursor:pointer;font-size:16.5px;font-weight:600;letter-spacing:-.3px;-webkit-tap-highlight-color:transparent}
-.q label > span{order:1;flex:1;min-width:0}
-.q input{order:2;appearance:none;flex:none;width:26px;height:26px;border:1.5px solid #d4d4d8;border-radius:50%;display:grid;place-content:center;cursor:pointer;transition:all .15s ease;background:var(--bg)}
-.q input:checked{background:var(--flush);border-color:var(--flush)}
-.q input:checked::after{content:"";width:10px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
-.q input:focus-visible{outline:2px solid var(--flush);outline-offset:3px}
+.q > label{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:18px 0 14px;cursor:pointer;font-size:16.5px;font-weight:600;letter-spacing:-.3px;-webkit-tap-highlight-color:transparent}
+.q > label > span{order:1;flex:1;min-width:0}
+.q > label > input{order:2;appearance:none;flex:none;width:26px;height:26px;border:1.5px solid #d4d4d8;border-radius:50%;display:grid;place-content:center;cursor:pointer;transition:all .15s ease;background:var(--bg)}
+.q > label > input:checked{background:var(--flush);border-color:var(--flush)}
+.q > label > input:checked::after{content:"";width:10px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.q > label > input:focus-visible{outline:2px solid var(--flush);outline-offset:3px}
 .q.on label{color:var(--fg)}
 .n{display:none}
 details{padding:0 0 14px}
@@ -76,3 +76,14 @@ details[open] summary::before{content:"근거 닫기"}
 .card b{display:block;font-size:17px;font-weight:700;letter-spacing:-.3px}
 .card span{color:var(--sub);font-size:14px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* 예/아니요 (1112: 체크 대신 둘 중 하나를 고르게) */
+.row{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:18px 0 12px}
+.row .t{flex:1;min-width:0;font-size:16.5px;font-weight:600;letter-spacing:-.3px}
+.yn{flex:none;display:flex;background:var(--soft);border-radius:10px;padding:3px;gap:2px}
+.yn label{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.yn input{position:absolute;opacity:0;width:1px;height:1px}
+.yn span{display:block;min-width:52px;text-align:center;padding:7px 10px;border-radius:8px;font-size:14px;font-weight:600;color:var(--sub);transition:all .15s ease}
+.yn input:checked + span{background:var(--bg);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.yn label:first-child input:checked + span{background:var(--flush);color:#fff;box-shadow:none}
+.yn input:focus-visible + span{outline:2px solid var(--flush);outline-offset:2px}
+@media (max-width:380px){.row{flex-direction:column;align-items:stretch;gap:10px}.yn{align-self:flex-start}}
