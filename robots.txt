@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /ko/naver-soju-7q2k/
+Disallow: /ko/naver-supp-7q2k/
 Disallow: /ko/drafts-7q2k/
 Sitemap: https://bodyhours.com/sitemap.xml
